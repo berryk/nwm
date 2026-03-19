@@ -240,6 +240,7 @@ void nwm::bar_draw(Base &base) {
 
     int title_bar_width = base.bar.width - x_offset - status_width - base.bar.systray_width;
 
+#if SHOW_BAR_TITLE
     XSetForeground(base.display, gc, base.bar.xft_active.pixel);
     XFillRectangle(base.display, pixmap, gc,
                   x_offset, 0, title_bar_width, base.bar.height);
@@ -257,6 +258,7 @@ void nwm::bar_draw(Base &base) {
                          x_offset + 8, y_offset,
                          (XftChar8*)window_title.c_str(), window_title.length());
     }
+#endif
 
     if (!base.bar.status_text.empty()) {
         int status_x = base.bar.width - status_width - base.bar.systray_width + 10;
