@@ -4,7 +4,7 @@ thirdparty
 Todo.md
 build
 install.sh
-src/config.hpp
+# src/config.hpp — we track our custom config in this fork
 TAGS
 test.sh
 src/extension/zoomer/zoomer
