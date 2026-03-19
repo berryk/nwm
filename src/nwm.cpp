@@ -1284,12 +1284,42 @@ void nwm::focus_window(ManagedWindow *window, Base &base)
 
 void nwm::focus_next(void *arg, Base &base)
 {
-    move_horizontal(arg, base, true, true, true, true);
+    if (base.horizontal_mode) {
+        move_horizontal(arg, base, true, true, true, true);
+        return;
+    }
+    // Tiled mode: cycle focus forward through window list
+    auto &ws = get_current_workspace(base);
+    if (ws.windows.size() < 2) return;
+    int idx = -1;
+    for (size_t i = 0; i < ws.windows.size(); ++i) {
+        if (ws.focused_window && ws.windows[i].window == ws.focused_window->window) {
+            idx = i;
+            break;
+        }
+    }
+    int next = (idx + 1) % (int)ws.windows.size();
+    focus_window(&ws.windows[next], base);
 }
 
 void nwm::focus_prev(void *arg, Base &base)
 {
-    move_horizontal(arg, base, false, true, true, true);
+    if (base.horizontal_mode) {
+        move_horizontal(arg, base, false, true, true, true);
+        return;
+    }
+    // Tiled mode: cycle focus backward through window list
+    auto &ws = get_current_workspace(base);
+    if (ws.windows.size() < 2) return;
+    int idx = -1;
+    for (size_t i = 0; i < ws.windows.size(); ++i) {
+        if (ws.focused_window && ws.windows[i].window == ws.focused_window->window) {
+            idx = i;
+            break;
+        }
+    }
+    int prev = (idx - 1 + (int)ws.windows.size()) % (int)ws.windows.size();
+    focus_window(&ws.windows[prev], base);
 }
 
 void nwm::move_window(ManagedWindow *window, int x, int y, Base &base)
