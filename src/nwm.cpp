@@ -926,46 +926,6 @@ void nwm::move_to_workspace(void *arg, Base &base)
             ManagedWindow w = *it;
             w.workspace = target_ws;
 
-            if (base.anim_manager && base.anim_manager->animations_enabled &&
-                    base.anim_manager->window_close_enabled) {
-                animate_window_close(base, w.window, [&base, w, target_ws, it]() mutable {
-                    auto &curr_ws = base.workspaces[base.current_workspace];
-
-                    for (auto iter = curr_ws.windows.begin(); iter != curr_ws.windows.end(); ++iter)
-                    {
-                        if (iter->window == w.window) {
-                            curr_ws.windows.erase(iter);
-                            break;
-                        }
-                    }
-
-                    base.workspaces[target_ws].windows.push_back(w);
-
-                    Atom workspace_atom = XInternAtom(base.display, "_NWM_WORKSPACE", False);
-                    long workspace_id = target_ws;
-                    XChangeProperty(base.display, w.window, workspace_atom,
-                                    XA_CARDINAL, 32, PropModeReplace,
-                                    (unsigned char*)&workspace_id, 1);
-
-                    XUnmapWindow(base.display, w.window);
-
-                    if (curr_ws.focused_window && curr_ws.focused_window->window == w.window)
-                    {
-                        curr_ws.focused_window = nullptr;
-                    }
-                    base.focused_window = nullptr;
-
-                    if (!curr_ws.windows.empty())
-                    {
-                        focus_window(&curr_ws.windows[0], base);
-                    }
-
-                    int ws = target_ws;
-                    switch_workspace((void*)&ws, base);
-                });
-                return;
-            }
-
             current_ws.windows.erase(it);
             base.workspaces[target_ws].windows.push_back(w);
 
@@ -974,17 +934,6 @@ void nwm::move_to_workspace(void *arg, Base &base)
             XChangeProperty(base.display, w.window, workspace_atom,
                             XA_CARDINAL, 32, PropModeReplace,
                             (unsigned char*)&workspace_id, 1);
-
-            XUnmapWindow(base.display, w.window);
-
-            if (current_ws.focused_window && current_ws.focused_window->window == w.window) {
-                current_ws.focused_window = nullptr;
-            }
-            base.focused_window = nullptr;
-
-            if (!current_ws.windows.empty()) {
-                focus_window(&current_ws.windows[0], base);
-            }
 
             break;
         }
