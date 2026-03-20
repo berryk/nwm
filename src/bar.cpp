@@ -66,6 +66,31 @@ void nwm::bar_init(Base &base) {
     bar_update_status_text(base);
 }
 
+void nwm::bar_resize(Base &base) {
+    int new_width = WIDTH(base.display, base.screen);
+    int new_y = (base.bar_position == 1)
+        ? HEIGHT(base.display, base.screen) - base.bar_height
+        : 0;
+
+    if (new_width == base.bar.width && new_y == base.bar.y) return;
+
+    base.bar.width = new_width;
+    base.bar.y = new_y;
+
+    XMoveResizeWindow(base.display, base.bar.window,
+                      base.bar.x, base.bar.y,
+                      base.bar.width, base.bar.height);
+
+    if (base.bar.xft_draw) {
+        XftDrawDestroy(base.bar.xft_draw);
+    }
+    base.bar.xft_draw = XftDrawCreate(
+        base.display, base.bar.window,
+        DefaultVisual(base.display, base.screen),
+        DefaultColormap(base.display, base.screen)
+    );
+}
+
 void nwm::bar_cleanup(Base &base) {
     if (base.bar.xft_draw) {
         XftDrawDestroy(base.bar.xft_draw);

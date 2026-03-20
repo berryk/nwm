@@ -2738,7 +2738,9 @@ void nwm::run(Base &base)
 
             if (e.type == base.xrandr_event_base + RRScreenChangeNotify ||
                     e.type == base.xrandr_event_base + RRNotify) {
+                XRRUpdateConfiguration(&e);
                 monitors_update(base);
+                bar_resize(base);
                 bar_draw(base);
                 continue;
             }

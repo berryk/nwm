@@ -34,6 +34,7 @@ struct StatusBar {
 };
 
 void bar_init(Base &base);
+void bar_resize(Base &base);
 void bar_cleanup(Base &base);
 void bar_draw(Base &base);
 void bar_update_workspaces(Base &base);
