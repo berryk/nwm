@@ -960,13 +960,8 @@ void nwm::move_to_workspace(void *arg, Base &base)
                         focus_window(&curr_ws.windows[0], base);
                     }
 
-                    if (base.horizontal_mode)
-                    {
-                        tile_horizontal(base);
-                    } else
-                    {
-                        tile_windows(base);
-                    }
+                    int ws = target_ws;
+                    switch_workspace((void*)&ws, base);
                 });
                 return;
             }
@@ -995,11 +990,7 @@ void nwm::move_to_workspace(void *arg, Base &base)
         }
     }
 
-    if (base.horizontal_mode) {
-        tile_horizontal(base);
-    } else {
-        tile_windows(base);
-    }
+    switch_workspace(arg, base);
 }
 
 void nwm::setup_keys(nwm::Base &base)
